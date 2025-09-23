@@ -12,7 +12,7 @@ app.use(express.json());
 // ✅ CORS setup: allow local + deployed frontend
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.FRONTEND_URL || "https://secure-dash.onrender.com", // fallback for Render
+  process.env.FRONTEND_URL || "https://secure-dash.onrender.com",
 ];
 
 app.use(
@@ -38,8 +38,8 @@ const frontendBuildPath = path.join(__dirname, "../frontend/dist");
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(frontendBuildPath));
 
-  // React Router fallback
-  app.get("*", (req, res) => {
+  // ⚡ Fix catch-all route for React Router
+  app.get("/*", (req, res) => {
     res.sendFile(path.join(frontendBuildPath, "index.html"));
   });
 }
