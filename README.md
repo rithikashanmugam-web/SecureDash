@@ -18,4 +18,4 @@ It supports roles like **Super Admin, Admin, and regular users** with module-spe
    Open `http://localhost:5173` in your browser.
 
 **Author**
-Your Name – [GitHub](https://github.com/rithikashanmugam-web)
+Rithika – [GitHub](https://github.com/rithikashanmugam-web)
