@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(frontendBuildPath));
 
   // ⚡ Fix catch-all route for React Router
-  app.get("*", (req, res) => {
+  app.get((req, res) => {
     res.sendFile(path.join(frontendBuildPath, "index.html"));
   });
 }
