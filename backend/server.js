@@ -9,10 +9,10 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// ✅ CORS setup
+// ✅ CORS setup: allow local + deployed frontend
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.FRONTEND_URL || "https://securedash-frontend.onrender.com",
+  "https://securedash-frontend.onrender.com", // deployed frontend URL
 ];
 
 app.use(
@@ -21,13 +21,26 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("Blocked by CORS:", origin); // optional logging
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // include OPTIONS
+    allowedHeaders: ["Content-Type", "Authorization"], // include headers needed for JWT
     credentials: true,
   })
 );
+
+// ✅ Handle OPTIONS preflight requests for all routes
+// Handle preflight OPTIONS requests globally
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.sendStatus(200);
+});
+
 
 // ✅ API routes
 const userRoutes = require("./routes/userRoutes");
@@ -46,7 +59,7 @@ if (process.env.NODE_ENV === "production") {
 
 // ✅ Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
