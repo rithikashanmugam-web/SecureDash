@@ -1,8 +1,10 @@
 import axios from "axios";
 
-// Use relative path since frontend & backend are served together
 const API = axios.create({
-  baseURL: "https://securedash-6.onrender.com",
+  baseURL:
+    process.env.NODE_ENV === "production"
+      ? "https://securedash-6.onrender.com"
+      : "http://localhost:5000",
 });
 
 // Attach token automatically

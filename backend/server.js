@@ -9,10 +9,10 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// ✅ CORS setup: allow local + deployed frontend
+// ✅ CORS setup
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.FRONTEND_URL || "https://secure-dash.onrender.com",
+  process.env.FRONTEND_URL || "https://securedash-frontend.onrender.com",
 ];
 
 app.use(
@@ -33,20 +33,20 @@ app.use(
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/users", userRoutes);
 
-// ✅ Serve frontend build (for production on Render)
+// ✅ Serve frontend in production
 const frontendBuildPath = path.join(__dirname, "../frontend/dist");
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(frontendBuildPath));
 
-  // ⚡ Fix catch-all route for React Router
-  app.get((req, res) => {
+  // ⚡ React Router catch-all
+  app.get("*", (req, res) => {
     res.sendFile(path.join(frontendBuildPath, "index.html"));
   });
 }
 
 // ✅ Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
