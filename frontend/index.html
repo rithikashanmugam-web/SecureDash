@@ -9,5 +9,19 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const svgs = document.querySelectorAll("svg");
+    svgs.forEach(svg => {
+      if (svg.hasAttribute("viewBox")) {
+        let vb = svg.getAttribute("viewBox");
+        // Replace %, px, or other units with numbers
+        vb = vb.replace(/[%px]/g, "");
+        svg.setAttribute("viewBox", vb);
+      }
+    });
+  });
+</script>
+
   </body>
 </html>
